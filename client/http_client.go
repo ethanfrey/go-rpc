@@ -149,7 +149,12 @@ func unmarshalResponseBytes(responseBytes []byte, result interface{}) (interface
 		return nil, errors.New(errorStr)
 	}
 	// unmarshal the RawMessage into the result
-	result = wire.ReadJSONPtr(result, *response.Result, &err)
+  tmp := []*json.RawMessage{}
+  err = json.Unmarshal(*response.Result, &tmp)
+  if err != nil {
+    return result, err
+  }
+	result = wire.ReadJSONPtr(result, *tmp[1], &err)
 	return result, err
 }
 
